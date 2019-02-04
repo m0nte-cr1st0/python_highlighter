@@ -15,12 +15,14 @@ def create_app():
 
     @app.route('/', methods=['GET'])
     def index():
+        process()
         return render_template(template_file_name)
 
     @app.route('/', methods=['POST'])
     def process():
         search_text = request.form['search']
         text = request.form['text']
+        markup_text(text)
         highlighted_text = highlight_text(text, search_text)
         result = {'text': text,
                   'highlighted_text': Markup(highlighted_text),
@@ -33,7 +35,8 @@ def create_app():
         @:return marked text, e.g., <mark>highlighted text</mark>."""
         result = text
 
-        # TODO: add an implementation
+        if text:
+            result = '<mark>' + text + '</mark>'
 
         return result
 
@@ -43,7 +46,9 @@ def create_app():
         @:return marked text, e.g., "sample text <mark>highlighted part</mark> rest of the text"."""
         result = text
 
-        # TODO: add an implementation
+        if text and expr:
+            if expr in text:
+                result = text.replace(expr, '<mark>'+expr+'</mark>')
 
         return result
 
